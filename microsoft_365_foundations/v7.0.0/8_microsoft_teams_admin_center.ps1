@@ -10,7 +10,7 @@ if (-not (Get-Module -ListAvailable MicrosoftTeams)) {
       -Scope CurrentUser `
       -Force
 }
-Import-Module "$PSScriptRoot\..\microssoft_365_foundations\perform_audit.psm1"
+Import-Module "$PSScriptRoot\..\microsoft_365_foundations\perform_audit.psm1"
 Import-Module MicrosoftTeams -Scope Global
 
 Connect-MicrosoftTeams
@@ -179,4 +179,25 @@ Perform-Audit `
   } `
   -ValidationGuidance "Verify that the returned value is False."
 
-  Stop-Transcript
+Perform-Audit `
+  -License "E3" `
+  -Level "L2" `
+  -Section "8.5.8" `
+  -Title "Ensure external meeting chat is off" `
+  -Code {
+    Get-CsTeamsMeetingPolicy -Identity Global | fl
+    AllowExternalNonTrustedMeetingChat
+  } `
+  -ValidationGuidance "Verify that the returned value is False."
+
+Perform-Audit `
+  -License "E3" `
+  -Level "L2" `
+  -Section "8.5.9" `
+  -Title "Ensure meeting recording is off by default" `
+  -Code {
+    Get-CsTeamsMeetingPolicy -Identity Global | fl AllowCloudRecording
+  } `
+  -ValidationGuidance "Verify that the returned value is False."
+
+Stop-Transcript
